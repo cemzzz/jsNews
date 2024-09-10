@@ -1,9 +1,20 @@
 const API_KEY=`b0359ebba28749d1a115ccc565bef4d1`
 
 let newsList=[]
+const menus = document.querySelectorAll(".menus button")
+menus.forEach(menu => menu.addEventListener("click", (event)=>newsCategory(event)))
 
 const getNews = async () => {
     const url = new URL(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}`);
+    const response =  await fetch(url)
+    const data = await response.json()
+    newsList = data.articles.filter(news => news.url && news.urlToImage);
+    render()
+}
+
+const newsCategory = async (event) => {
+    const category = event.target.textContent
+    const url = new URL(`https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${API_KEY}`)
     const response =  await fetch(url)
     const data = await response.json()
     newsList = data.articles.filter(news => news.url && news.urlToImage);
