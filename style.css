@@ -68,3 +68,12 @@ body {
     font-size: 18px;
 }
 /* 뉴스 리스트 영역 끝 */
+
+/* 페이지 영역 시작 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 50px 0px;
+}
+
+/* 페이지 영역 끝 */

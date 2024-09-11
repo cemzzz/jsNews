@@ -1,8 +1,13 @@
-const API_KEY=`b0359ebba28749d1a115ccc565bef4d12`
+const API_KEY=`b0359ebba28749d1a115ccc565bef4d1`
 //const API_KEY=`pub_53149b62cd2c643ab834f9bceb73ef4077a59`
 
 let newsList=[]
 let url = new URL(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}`) // 공통적으로 쓰일 url 기본 값은 head
+let totalResults = 0
+let page = 1
+const pageSize = 10
+const groupSize = 5
+
 const menus = document.querySelectorAll(".menus button")
 const searchInput = document.getElementById("search-input")
 
@@ -20,13 +25,14 @@ const getNewsData = async() =>{
         const data = await response.json()
         if(response.status === 200){
             newsList = data.articles.filter(news => news.url && news.urlToImage);
+            totalResults = data.totalResults
             render()
+            pageRender()
         } else {
             throw new Error(data.message)
         }
     } catch(error){
         errorRender()
-        console.log("에러메시지", error.message)
     }  
 }
 
@@ -90,6 +96,19 @@ const errorRender = () => {
             <div>에러가 발생했습니다. 잠시 후에 다시 시도해주세요</div>
         </div>
     `;
+}
+
+const pageRender = () => {
+    const pageGroup = Math.ceil(page/groupSize)
+    const lastPage = pageGroup * groupSize
+    const firstPage = lastPage - (groupSize - 1)
+
+    let paginationHTML = ``
+
+    for(let i=firstPage; i<=lastPage; i++){
+        paginationHTML+= `<li class="page-item"><a class="page-link" href="#">${i}</a></li>`
+    }
+    document.querySelector(".pagination").innerHTML = paginationHTML
 }
 
 getNews()
