@@ -21,6 +21,9 @@ searchInput.addEventListener("keydown", (event) => {
 
 const getNewsData = async() =>{
     try{
+        url.searchParams.set("page", page) // url에 &page=page 추가
+        url.searchParams.set("pageSize", pageSize)
+
         const response =  await fetch(url)
         const data = await response.json()
         if(response.status === 200){
@@ -99,16 +102,32 @@ const errorRender = () => {
 }
 
 const pageRender = () => {
+    const totalPages = Math.ceil(totalResults/pageSize)
     const pageGroup = Math.ceil(page/groupSize)
-    const lastPage = pageGroup * groupSize
-    const firstPage = lastPage - (groupSize - 1)
+    let lastPage = pageGroup * groupSize
+    if(lastPage > totalPages) {
+        lastPage = totalPages
+    }
+    const firstPage = lastPage - (groupSize - 1) <= 0 
+        ? 1
+        : lastPage - (groupSize - 1)
 
-    let paginationHTML = ``
+    let paginationHTML = page == 1
+        ? ``
+        : `<li class="page-item" onclick="moveToPage(${page-1})"><a class="page-link">&lt;</a></li>`
 
     for(let i=firstPage; i<=lastPage; i++){
-        paginationHTML+= `<li class="page-item"><a class="page-link" href="#">${i}</a></li>`
+        paginationHTML+= `<li class="page-item  ${i === page ? 'active' : ''}" onclick="moveToPage(${i})"><a class="page-link">${i}</a></li>`
     }
+    paginationHTML += page == lastPage 
+        ? ``
+        : `<li class="page-item" onclick="moveToPage(${page+1})"><a class="page-link">&gt;</a></li>`
     document.querySelector(".pagination").innerHTML = paginationHTML
+}
+
+const moveToPage = (pageNumber) => {
+    page = pageNumber
+    getNewsData()
 }
 
 getNews()
