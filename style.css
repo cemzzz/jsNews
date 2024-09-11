@@ -61,8 +61,10 @@ body {
     max-height: 300px;
 }
 
-.no-News-List{
+.no-news-list{
     display: flex;
     justify-content: center;
+    margin-top: 300px;
+    font-size: 18px;
 }
 /* 뉴스 리스트 영역 끝 */
