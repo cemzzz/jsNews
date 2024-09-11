@@ -1,4 +1,4 @@
-const API_KEY=`b0359ebba28749d1a115ccc565bef4d1`
+const API_KEY=`b0359ebba28749d1a115ccc565bef4d12`
 //const API_KEY=`pub_53149b62cd2c643ab834f9bceb73ef4077a59`
 
 let newsList=[]
@@ -15,10 +15,19 @@ searchInput.addEventListener("keydown", (event) => {
 })
 
 const getNewsData = async() =>{
-    const response =  await fetch(url)
-    const data = await response.json()
-    newsList = data.articles.filter(news => news.url && news.urlToImage);
-    render()
+    try{
+        const response =  await fetch(url)
+        const data = await response.json()
+        if(response.status === 200){
+            newsList = data.articles.filter(news => news.url && news.urlToImage);
+            render()
+        } else {
+            throw new Error(data.message)
+        }
+    } catch(error){
+        errorRender()
+        console.log("에러메시지", error.message)
+    }  
 }
 
 const getNews = async () => {
@@ -73,6 +82,14 @@ const render = () => {
         </div>`}).join('');
 
     document.getElementById("news-board").innerHTML = newsHTML
+}
+
+const errorRender = () => {
+    document.getElementById("news-board").innerHTML = `
+        <div class="no-news-list">
+            <div>에러가 발생했습니다. 잠시 후에 다시 시도해주세요</div>
+        </div>
+    `;
 }
 
 getNews()
